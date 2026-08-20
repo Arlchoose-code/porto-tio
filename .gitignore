@@ -21,6 +21,13 @@ backend/worker.exe
 .env.*.local
 backend/.env
 
+# Internal Planning & Agent Markdown Files
+plan.md
+PROGRESS.md
+AGENTS.md
+CLAUDE.md
+*.plan.md
+
 # Heavy Source Raw Documents & Seed Extracts
 *.pdf
 *.docx
