@@ -1,0 +1,45 @@
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Go Binaries & Local Build
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+backend/server.exe
+backend/worker.exe
+
+# Environment Secrets
+.env.local
+.env.*.local
+backend/.env
+
+# Heavy Source Raw Documents & Seed Extracts
+*.pdf
+*.docx
+seed_assets/
+*.zip
+*.tar.gz
+
+# Logs & Temporary Test Files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+screenshots/
+test_*.js
+take_*.js
+create_*.py
+verify_*.js
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
