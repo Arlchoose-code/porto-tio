@@ -316,7 +316,7 @@ export default function AdminSettingsPage() {
           <div className="w-full overflow-x-auto pb-1.5 scrollbar-none touch-pan-x">
             <TabsList className="inline-flex w-max min-w-full bg-card/80 border border-border/50 p-1 rounded-2xl shadow-xs">
               <TabsTrigger value="hero" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <Sparkles className="h-3.5 w-3.5" />
                 <span>Hero &amp; Impact Stats</span>
               </TabsTrigger>
               <TabsTrigger value="branding" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
