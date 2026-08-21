@@ -21,6 +21,8 @@ export default function AdminMediaLibraryPage() {
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [inspectTarget, setInspectTarget] = useState<Media | null>(null);
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const loadMedia = async () => {
     try {
       setLoading(true);
@@ -50,7 +52,7 @@ export default function AdminMediaLibraryPage() {
       toast.error("Upload failed: " + (err.message || "Failed to process image"));
     } finally {
       setUploading(false);
-      e.target.value = "";
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -85,13 +87,24 @@ export default function AdminMediaLibraryPage() {
         title="Media Assets Library"
         description="Upload, inspect, and manage all images with pure Go automated multi-size pipeline."
         action={
-          <label className="cursor-pointer">
-            <Button size="sm" disabled={uploading} className="gap-1.5 h-8 text-xs">
+          <div>
+            <Button
+              size="sm"
+              disabled={uploading}
+              className="gap-1.5 h-8 text-xs cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
               {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UploadCloud className="h-3.5 w-3.5" />}
               <span>Upload New File</span>
             </Button>
-            <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-          </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleUpload}
+              className="hidden"
+            />
+          </div>
         }
       />
 
@@ -125,13 +138,17 @@ export default function AdminMediaLibraryPage() {
               <p className="font-semibold text-foreground text-sm">No media assets found</p>
               <p className="text-xs text-muted-foreground mt-0.5">Upload images above to use across projects, certificates, and content.</p>
             </div>
-            <label className="cursor-pointer pt-2">
-              <Button size="sm" variant="outline" className="gap-1.5 h-8 text-xs">
+            <div className="pt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 h-8 text-xs cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <UploadCloud className="h-3.5 w-3.5" />
                 <span>Upload First Image</span>
               </Button>
-              <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-            </label>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">

@@ -32,6 +32,60 @@ export function MediaLibraryModal({
   const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState<Media | null>(null);
   const [uploadedPreview, setUploadedPreview] = useState<Media | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      setUploading(true);
+      const res = await mediaApi.uploadMedia(files[0]);
+      toast.success("Image uploaded & optimized successfully!");
+      setMediaList((prev) => [res.data, ...prev]);
+      setSelectedItem(res.data);
+      setUploadedPreview(res.data);
+    } catch (err: any) {
+      toast.error("Upload failed: " + (err.message || "Failed to process file"));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleManualUpload = (file: File) => {
+    (async () => {
+      try {
+        setUploading(true);
+        const res = await mediaApi.uploadMedia(file);
+        toast.success("Image uploaded & optimized successfully!");
+        setMediaList((prev) => [res.data, ...prev]);
+        setSelectedItem(res.data);
+        setUploadedPreview(res.data);
+      } catch (err: any) {
+        toast.error("Upload failed: " + (err.message || "Failed to process file"));
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
+    })();
+  };
+
   const [tab, setTab] = useState("library");
 
   useEffect(() => {
@@ -166,7 +220,17 @@ export function MediaLibraryModal({
             )}
           </TabsContent>
 
-          <TabsContent value="upload" className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl my-2 bg-muted/10">
+          <TabsContent
+            value="upload"
+            className={`flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl my-2 transition-colors ${
+              isDragging
+                ? "border-primary bg-primary/10 ring-2 ring-primary/30"
+                : "border-border/80 bg-muted/10 hover:border-primary/50"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
             {uploading ? (
               <div className="flex flex-col items-center space-y-3">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -193,33 +257,57 @@ export function MediaLibraryModal({
                   <Button size="sm" onClick={() => handleConfirmSelect(uploadedPreview)} className="text-xs">
                     Use This Image
                   </Button>
-                  <label className="cursor-pointer">
-                    <Button size="sm" variant="outline" className="text-xs pointer-events-none">
-                      Upload Another
-                    </Button>
-                    <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-                  </label>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Upload Another
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
                 </div>
               </div>
             ) : (
-              <label className="flex flex-col items-center cursor-pointer space-y-3 text-center">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="flex flex-col items-center cursor-pointer space-y-3 text-center w-full py-6"
+              >
                 <div className="p-4 bg-primary/10 rounded-full text-primary hover:scale-105 transition-transform">
                   <UploadCloud className="h-8 w-8" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-foreground">Click to upload new image</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">PNG, JPG, WebP (Automatically converted to 3 sizes)</p>
+                  <p className="text-xs font-bold text-foreground">
+                    {isDragging ? "Drop image file here..." : "Click or drag image file here to upload"}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground mt-1">PNG, JPG, WebP, GIF (Automatically converted to 3 sizes)</p>
                 </div>
-                <Button size="sm" variant="outline" className="text-xs pointer-events-none mt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="text-xs mt-2 pointer-events-auto cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current?.click();
+                  }}
+                >
                   Browse Files
                 </Button>
                 <input
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-              </label>
+              </div>
             )}
           </TabsContent>
 
