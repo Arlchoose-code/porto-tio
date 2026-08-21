@@ -8,7 +8,11 @@ type SiteSettingRequest struct {
 	Address     string `json:"address"`
 	Email       string `json:"email"`
 	Phone       string `json:"phone"`
-	BioShort    string `json:"bio_short"`
-	FooterText  string `json:"footer_text"`
-	RobotsTxt   string `json:"robots_txt"`
+	BioShort        string `json:"bio_short"`
+	FooterText      string `json:"footer_text"`
+	RobotsTxt       string `json:"robots_txt"`
+	HeroBadge       string `json:"hero_badge"`
+	HeroTitle       string `json:"hero_title"`
+	HeroDescription string `json:"hero_description"`
+	HeroStats       string `json:"hero_stats"`
 }

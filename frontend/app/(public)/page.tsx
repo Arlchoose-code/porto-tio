@@ -64,6 +64,81 @@ export default async function HomePage() {
   const linkedInObj = siteInfo?.social_links?.find((s) => s.platform.toLowerCase() === "linkedin");
   const linkedInUrl = linkedInObj?.url || "https://www.linkedin.com/in/sulistiomurtimulyono";
 
+  // Dynamic Hero content with fallback (synchronized with bio_short)
+  const heroBadge = siteInfo?.site_setting?.hero_badge || "Digital Business & Project Management";
+  const heroTitle = siteInfo?.site_setting?.hero_title || "Connecting Business, Technology, Data, and People.";
+  const heroDescription =
+    siteInfo?.site_setting?.hero_description ||
+    siteInfo?.site_setting?.bio_short ||
+    siteInfo?.site_setting?.description ||
+    "Finance Management graduate from Institut Bisnis Nusantara and Information Systems awardee at University of Belgrade. Combining financial acumen, technical execution, and global leadership.";
+
+  // Dynamic Key Impact Stats with fallback
+  let heroStats = [
+    {
+      id: "stat-1",
+      value: "97%",
+      label: "Voter Turnout",
+      description: "General Election 2024 (Serbia & Montenegro)",
+      color: "primary",
+    },
+    {
+      id: "stat-2",
+      value: "IDR 1.7B",
+      label: "Budget Managed",
+      description: "Strict financial audit compliance under KPU RI",
+      color: "indigo",
+    },
+    {
+      id: "stat-3",
+      value: "65 Countries",
+      label: "Global Coordination",
+      description: "OISAA / PPI Dunia Congress & Regulations",
+      color: "blue",
+    },
+    {
+      id: "stat-4",
+      value: "3.72 / 4.00",
+      label: "Cumulative GPA",
+      description: "Finance Management — Institut Bisnis Nusantara",
+      color: "emerald",
+    },
+  ];
+
+  if (siteInfo?.site_setting?.hero_stats) {
+    try {
+      const parsed = JSON.parse(siteInfo.site_setting.hero_stats);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        heroStats = parsed;
+      }
+    } catch (e) {
+      // fallback to defaults on error
+    }
+  }
+
+  const getStatColorClass = (color?: string) => {
+    switch (color?.toLowerCase()) {
+      case "indigo":
+        return "text-indigo-500 dark:text-indigo-400";
+      case "blue":
+        return "text-blue-500 dark:text-blue-400";
+      case "emerald":
+      case "green":
+        return "text-emerald-500 dark:text-emerald-400";
+      case "purple":
+        return "text-purple-500 dark:text-purple-400";
+      case "amber":
+      case "yellow":
+        return "text-amber-500 dark:text-amber-400";
+      case "rose":
+      case "red":
+        return "text-rose-500 dark:text-rose-400";
+      case "primary":
+      default:
+        return "text-primary";
+    }
+  };
+
   return (
     <div className="space-y-24 pb-16 overflow-hidden">
       {/* ================= HERO SECTION ================= */}
@@ -76,19 +151,25 @@ export default async function HomePage() {
           <MotionDiv delay={0} className="max-w-3xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold backdrop-blur-md shadow-sm">
               <Sparkles className="h-3.5 w-3.5 animate-spin text-primary" style={{ animationDuration: "6s" }} />
-              <span>Digital Business &amp; Project Management</span>
+              <span>{heroBadge}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
-              Connecting{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Business, Technology,
-              </span>{" "}
-              Data, and People.
+              {heroTitle.includes("Business, Technology") ? (
+                <>
+                  Connecting{" "}
+                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    Business, Technology,
+                  </span>{" "}
+                  Data, and People.
+                </>
+              ) : (
+                heroTitle
+              )}
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-normal">
-              Finance Management graduate (GPA 3.72) and international Information Systems scholarship awardee. Proven track record managing multi-billion rupiah budgets, leading cross-functional teams across 65 countries, and engineering user-centered digital platforms.
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-normal whitespace-pre-line">
+              {heroDescription}
             </p>
 
             {/* Quick CTA Actions */}
@@ -116,38 +197,18 @@ export default async function HomePage() {
           </MotionDiv>
 
           {/* Key Impact Stats Counter Banner */}
-          <MotionDiv delay={2} className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 p-6 sm:p-8 rounded-3xl border border-border/60 bg-card/60 backdrop-blur-xl shadow-lg hover:border-primary/40 transition-colors">
-            <div className="space-y-1 p-2">
-              <div className="text-2xl sm:text-3xl font-extrabold text-primary flex items-center gap-1 tracking-tight">
-                97%
+          <MotionDiv delay={2} className={`mt-16 grid grid-cols-2 md:grid-cols-${Math.min(heroStats.length, 4)} gap-4 sm:gap-6 p-6 sm:p-8 rounded-3xl border border-border/60 bg-card/60 backdrop-blur-xl shadow-lg hover:border-primary/40 transition-colors`}>
+            {heroStats.map((stat, idx) => (
+              <div key={stat.id || idx} className="space-y-1 p-2">
+                <div className={`text-2xl sm:text-3xl font-extrabold flex items-center gap-1 tracking-tight ${getStatColorClass(stat.color)}`}>
+                  {stat.value}
+                </div>
+                <p className="text-xs font-semibold text-foreground">{stat.label}</p>
+                {stat.description && (
+                  <p className="text-[11px] text-muted-foreground">{stat.description}</p>
+                )}
               </div>
-              <p className="text-xs font-semibold text-foreground">Voter Turnout</p>
-              <p className="text-[11px] text-muted-foreground">General Election 2024 (Serbia &amp; Montenegro)</p>
-            </div>
-
-            <div className="space-y-1 p-2">
-              <div className="text-2xl sm:text-3xl font-extrabold text-indigo-500 flex items-center gap-1 tracking-tight">
-                IDR 1.7B
-              </div>
-              <p className="text-xs font-semibold text-foreground">Budget Managed</p>
-              <p className="text-[11px] text-muted-foreground">Strict financial audit compliance under KPU RI</p>
-            </div>
-
-            <div className="space-y-1 p-2">
-              <div className="text-2xl sm:text-3xl font-extrabold text-blue-500 flex items-center gap-1 tracking-tight">
-                65 Countries
-              </div>
-              <p className="text-xs font-semibold text-foreground">Global Coordination</p>
-              <p className="text-[11px] text-muted-foreground">OISAA / PPI Dunia Congress &amp; Regulations</p>
-            </div>
-
-            <div className="space-y-1 p-2">
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-500 flex items-center gap-1 tracking-tight">
-                3.72 / 4.00
-              </div>
-              <p className="text-xs font-semibold text-foreground">Cumulative GPA</p>
-              <p className="text-[11px] text-muted-foreground">Finance Management — Institut Bisnis Nusantara</p>
-            </div>
+            ))}
           </MotionDiv>
         </div>
       </section>

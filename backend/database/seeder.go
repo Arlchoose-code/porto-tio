@@ -1,4 +1,4 @@
-﻿package database
+package database
 
 import (
 	"log"
@@ -31,12 +31,16 @@ func Seed(db *gorm.DB) {
 	db.Model(&models.SiteSetting{}).Count(&siteCount)
 	if siteCount == 0 {
 		siteSetting := models.SiteSetting{
-			Title:       "Sulistio Murti Mulyono — Digital Business & Project Management",
-			Description: "Official portfolio of Sulistio Murti Mulyono (Tio). Connecting Business, Technology, Data, and People to Deliver Impact.",
-			Logo:        "/assets/logo.webp",
-			Favicon:     "/favicon.ico",
-			FooterText:  "© 2026 Sulistio Murti Mulyono. All rights reserved. Connecting Business, Technology, Data, and People.",
-			RobotsTxt:   "User-agent: *\nAllow: /\nSitemap: http://localhost:3000/sitemap.xml",
+			Title:           "Sulistio Murti Mulyono — Digital Business & Project Management",
+			Description:     "Official portfolio of Sulistio Murti Mulyono (Tio). Connecting Business, Technology, Data, and People to Deliver Impact.",
+			Logo:            "/assets/logo.webp",
+			Favicon:         "/favicon.ico",
+			FooterText:      "© 2026 Sulistio Murti Mulyono. All rights reserved. Connecting Business, Technology, Data, and People.",
+			RobotsTxt:       "User-agent: *\nAllow: /\nSitemap: http://localhost:3000/sitemap.xml",
+			HeroBadge:       "Digital Business & Project Management",
+			HeroTitle:       "Connecting Business, Technology, Data, and People.",
+			HeroDescription: "Finance Management graduate (GPA 3.72) and international Information Systems scholarship awardee. Proven track record managing multi-billion rupiah budgets, leading cross-functional teams across 65 countries, and engineering user-centered digital platforms.",
+			HeroStats:       `[{"id":"stat-1","value":"97%","label":"Voter Turnout","description":"General Election 2024 (Serbia & Montenegro)","color":"primary"},{"id":"stat-2","value":"IDR 1.7B","label":"Budget Managed","description":"Strict financial audit compliance under KPU RI","color":"indigo"},{"id":"stat-3","value":"65 Countries","label":"Global Coordination","description":"OISAA / PPI Dunia Congress & Regulations","color":"blue"},{"id":"stat-4","value":"3.72 / 4.00","label":"Cumulative GPA","description":"Finance Management — Institut Bisnis Nusantara","color":"emerald"}]`,
 		}
 		db.Create(&siteSetting)
 		log.Println("Site settings seeded.")

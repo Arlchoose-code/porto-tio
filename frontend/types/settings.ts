@@ -1,3 +1,12 @@
+export interface HeroStatItem {
+  id: string;
+  value: string;
+  label: string;
+  description: string;
+  color?: string; // "primary" | "indigo" | "blue" | "emerald" | "purple" | "amber"
+  order?: number;
+}
+
 export interface SiteSetting {
   id: number;
   title: string;
@@ -10,6 +19,10 @@ export interface SiteSetting {
   bio_short?: string;
   footer_text: string;
   robots_txt: string;
+  hero_badge?: string;
+  hero_title?: string;
+  hero_description?: string;
+  hero_stats?: string; // JSON string of HeroStatItem[]
 }
 
 export interface SocialLink {

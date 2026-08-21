@@ -13,6 +13,8 @@ next-env.d.ts
 *.dll
 *.so
 *.dylib
+backend/server
+backend/server_linux
 backend/server.exe
 backend/worker.exe
 

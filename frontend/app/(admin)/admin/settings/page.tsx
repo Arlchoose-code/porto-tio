@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { settingsApi } from "@/lib/api/settings";
 import { seoApi } from "@/lib/api/seo";
 import { authApi } from "@/lib/api/auth";
-import { SiteSetting, SocialLink } from "@/types/settings";
+import { SiteSetting, SocialLink, HeroStatItem } from "@/types/settings";
 import { SeoSetting } from "@/types/seo";
 import { User as AuthUser } from "@/types/auth";
 import { toast } from "sonner";
@@ -35,10 +35,46 @@ import {
   Lock,
   KeyRound,
   ShieldAlert,
+  Sparkles,
+  ArrowUp,
+  ArrowDown,
+  BarChart3,
 } from "lucide-react";
+
+const defaultStatsList: HeroStatItem[] = [
+  {
+    id: "stat-1",
+    value: "97%",
+    label: "Voter Turnout",
+    description: "General Election 2024 (Serbia & Montenegro)",
+    color: "primary",
+  },
+  {
+    id: "stat-2",
+    value: "IDR 1.7B",
+    label: "Budget Managed",
+    description: "Strict financial audit compliance under KPU RI",
+    color: "indigo",
+  },
+  {
+    id: "stat-3",
+    value: "65 Countries",
+    label: "Global Coordination",
+    description: "OISAA / PPI Dunia Congress & Regulations",
+    color: "blue",
+  },
+  {
+    id: "stat-4",
+    value: "3.72 / 4.00",
+    label: "Cumulative GPA",
+    description: "Finance Management — Institut Bisnis Nusantara",
+    color: "emerald",
+  },
+];
 
 export default function AdminSettingsPage() {
   const [site, setSite] = useState<SiteSetting | null>(null);
+  const [statsList, setStatsList] = useState<HeroStatItem[]>(defaultStatsList);
   const [socials, setSocials] = useState<SocialLink[]>([]);
   const [seoList, setSeoList] = useState<SeoSetting[]>([]);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
@@ -64,7 +100,17 @@ export default function AdminSettingsPage() {
           seoApi.getAllSeoSettings(),
           authApi.getMe(),
         ]);
-        if (s.status === "fulfilled") setSite(s.value.data);
+        if (s.status === "fulfilled" && s.value.data) {
+          setSite(s.value.data);
+          if (s.value.data.hero_stats) {
+            try {
+              const parsed = JSON.parse(s.value.data.hero_stats);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                setStatsList(parsed);
+              }
+            } catch (e) {}
+          }
+        }
         if (soc.status === "fulfilled") setSocials(soc.value.data || []);
         if (seo.status === "fulfilled") setSeoList(seo.value.data || []);
         if (me.status === "fulfilled" && me.value.data) {
@@ -85,13 +131,51 @@ export default function AdminSettingsPage() {
     if (!site) return;
     try {
       setSavingSite(true);
-      await settingsApi.updateAdminSiteSettings(site);
-      toast.success("Site branding, logo, favicon, and contact info saved! Background revalidation triggered.");
+      const payload: SiteSetting = {
+        ...site,
+        hero_stats: JSON.stringify(statsList),
+      };
+      const res = await settingsApi.updateAdminSiteSettings(payload);
+      setSite(res.data);
+      toast.success("Site branding, hero content, and impact stats saved! Background revalidation triggered.");
     } catch (e: any) {
       toast.error("Failed to save: " + e.message);
     } finally {
       setSavingSite(false);
     }
+  };
+
+  const handleAddStat = () => {
+    const newStat: HeroStatItem = {
+      id: `stat-${Date.now()}`,
+      value: "100%",
+      label: "Metric Title",
+      description: "Supporting description",
+      color: "primary",
+    };
+    setStatsList((prev) => [...prev, newStat]);
+  };
+
+  const handleUpdateStat = (index: number, field: keyof HeroStatItem, val: string) => {
+    setStatsList((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: val } : item))
+    );
+  };
+
+  const handleDeleteStat = (index: number) => {
+    setStatsList((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleMoveStat = (index: number, direction: "up" | "down") => {
+    setStatsList((prev) => {
+      const arr = [...prev];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= arr.length) return prev;
+      const temp = arr[index];
+      arr[index] = arr[targetIndex];
+      arr[targetIndex] = temp;
+      return arr;
+    });
   };
 
   const handleSaveSocial = async (item: SocialLink) => {
@@ -228,9 +312,13 @@ export default function AdminSettingsPage() {
       />
 
       <div className="space-y-6">
-        <Tabs defaultValue="branding" className="space-y-6">
+        <Tabs defaultValue="hero" className="space-y-6">
           <div className="w-full overflow-x-auto pb-1.5 scrollbar-none touch-pan-x">
             <TabsList className="inline-flex w-max min-w-full bg-card/80 border border-border/50 p-1 rounded-2xl shadow-xs">
+              <TabsTrigger value="hero" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0 text-primary font-medium">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span>Hero &amp; Impact Stats</span>
+              </TabsTrigger>
               <TabsTrigger value="branding" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
                 <Settings className="h-3.5 w-3.5" />
                 <span>Branding &amp; Assets</span>
@@ -249,6 +337,193 @@ export default function AdminSettingsPage() {
               </TabsTrigger>
             </TabsList>
           </div>
+
+          {/* 0. Hero & Impact Stats Tab */}
+          <TabsContent value="hero" className="space-y-4">
+            <FormWrapper
+              title="Homepage Hero Section &amp; Impact Metrics"
+              description="Customize the homepage badge pill, main headline, introductory bio narrative, and key metric counters."
+              actions={
+                <Button onClick={handleSaveSite} disabled={savingSite} size="sm" className="gap-2 text-xs">
+                  {savingSite ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+                  <span>Save Hero &amp; Stats</span>
+                </Button>
+              }
+            >
+              <div className="space-y-6">
+                {/* Hero Headline & Intro */}
+                <div className="space-y-4 p-4 rounded-xl border border-border/60 bg-muted/20">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span>Hero Headline &amp; Narrative</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Badge Pill Text</Label>
+                      <Input
+                        value={site?.hero_badge || ""}
+                        onChange={(e) => setSite((prev) => (prev ? { ...prev, hero_badge: e.target.value } : null))}
+                        placeholder="e.g. Digital Business &amp; Project Management"
+                        className="h-9 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Main Hero Headline</Label>
+                      <Input
+                        value={site?.hero_title || ""}
+                        onChange={(e) => setSite((prev) => (prev ? { ...prev, hero_title: e.target.value } : null))}
+                        placeholder="e.g. Connecting Business, Technology, Data, and People."
+                        className="h-9 text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold">Introductory Biography &amp; Narrative</Label>
+                    <Textarea
+                      value={site?.hero_description || site?.bio_short || site?.description || ""}
+                      onChange={(e) =>
+                        setSite((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                hero_description: e.target.value,
+                                bio_short: e.target.value,
+                              }
+                            : null
+                        )
+                      }
+                      placeholder="Full introductory summary displayed in the homepage hero and footer bio..."
+                      rows={3}
+                      className="text-xs leading-relaxed"
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      This narrative is synchronized and displayed on both the Homepage Hero section and the Site Footer.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Impact Metric Cards */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                        <span>Key Impact Metrics / Stat Cards ({statsList.length})</span>
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        Edit values (e.g. 97%, 97/100, IDR 1.7B), titles, supporting subtitles, and accent colors.
+                      </p>
+                    </div>
+                    <Button onClick={handleAddStat} variant="outline" size="sm" className="gap-1.5 text-xs h-8">
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Add Metric Card</span>
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {statsList.map((stat, idx) => (
+                      <div
+                        key={stat.id || idx}
+                        className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs space-y-3 relative group"
+                      >
+                        <div className="flex items-center justify-between pb-2 border-b border-border/40">
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                            Metric #{idx + 1}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              disabled={idx === 0}
+                              onClick={() => handleMoveStat(idx, "up")}
+                              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            >
+                              <ArrowUp className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              disabled={idx === statsList.length - 1}
+                              onClick={() => handleMoveStat(idx, "down")}
+                              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            >
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteStat(idx)}
+                              className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label className="text-[11px] font-medium">Value *</Label>
+                            <Input
+                              value={stat.value}
+                              onChange={(e) => handleUpdateStat(idx, "value", e.target.value)}
+                              placeholder="e.g. 97% or 97/100"
+                              className="h-8 text-xs font-bold"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[11px] font-medium">Color Theme</Label>
+                            <Select
+                              value={stat.color || "primary"}
+                              onValueChange={(val) => handleUpdateStat(idx, "color", val)}
+                            >
+                              <SelectTrigger className="h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="primary">Primary Blue</SelectItem>
+                                <SelectItem value="indigo">Indigo</SelectItem>
+                                <SelectItem value="blue">Sky Blue</SelectItem>
+                                <SelectItem value="emerald">Emerald Green</SelectItem>
+                                <SelectItem value="purple">Purple</SelectItem>
+                                <SelectItem value="amber">Amber / Yellow</SelectItem>
+                                <SelectItem value="rose">Rose Red</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-[11px] font-medium">Title / Label *</Label>
+                          <Input
+                            value={stat.label}
+                            onChange={(e) => handleUpdateStat(idx, "label", e.target.value)}
+                            placeholder="e.g. Voter Turnout"
+                            className="h-8 text-xs"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-[11px] font-medium">Subtitle / Supporting Description</Label>
+                          <Input
+                            value={stat.description}
+                            onChange={(e) => handleUpdateStat(idx, "description", e.target.value)}
+                            placeholder="e.g. General Election 2024 (Serbia & Montenegro)"
+                            className="h-8 text-xs"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FormWrapper>
+          </TabsContent>
 
           {/* 1. Global Branding & Assets Tab */}
           <TabsContent value="branding" className="space-y-4">
