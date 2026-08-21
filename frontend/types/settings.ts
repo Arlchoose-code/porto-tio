@@ -27,6 +27,9 @@ export interface SiteSetting {
   hero_card_status?: string;
   hero_card_subtitle?: string;
   hero_stats?: string; // JSON string of HeroStatItem[]
+  career_badge?: string;
+  career_title?: string;
+  career_description?: string;
 }
 
 export interface SocialLink {

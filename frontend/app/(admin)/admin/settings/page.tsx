@@ -39,6 +39,7 @@ import {
   ArrowUp,
   ArrowDown,
   BarChart3,
+  Briefcase,
 } from "lucide-react";
 
 const defaultStatsList: HeroStatItem[] = [
@@ -560,6 +561,50 @@ export default function AdminSettingsPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Career & Leadership Section Customizer */}
+                <div className="space-y-4 p-4 rounded-xl border border-border/60 bg-muted/20">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Briefcase className="h-3.5 w-3.5 text-primary" />
+                    <span>Career &amp; Leadership Section (Homepage Timeline)</span>
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Section Badge Text</Label>
+                      <Input
+                        value={site?.career_badge || ""}
+                        onChange={(e) => setSite((prev) => (prev ? { ...prev, career_badge: e.target.value } : null))}
+                        placeholder="e.g. Career &amp; Leadership"
+                        className="h-9 text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">Section Headline</Label>
+                      <Input
+                        value={site?.career_title || ""}
+                        onChange={(e) => setSite((prev) => (prev ? { ...prev, career_title: e.target.value } : null))}
+                        placeholder="e.g. Proven Track Record in High-Stakes Environments"
+                        className="h-9 text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold">Section Description Narrative</Label>
+                    <Textarea
+                      value={site?.career_description || ""}
+                      onChange={(e) => setSite((prev) => (prev ? { ...prev, career_description: e.target.value } : null))}
+                      placeholder="From leading overseas general elections to coordinating bilateral international student assemblies..."
+                      rows={3}
+                      className="text-xs leading-relaxed"
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      This narrative is displayed on the homepage directly to the left of the work experience timeline.
+                    </p>
                   </div>
                 </div>
               </div>

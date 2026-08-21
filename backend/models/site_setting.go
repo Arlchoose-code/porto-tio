@@ -24,6 +24,9 @@ type SiteSetting struct {
 	HeroCardStatus   string    `gorm:"size:255" json:"hero_card_status"`
 	HeroCardSubtitle string    `gorm:"size:255" json:"hero_card_subtitle"`
 	HeroStats        string    `gorm:"type:text" json:"hero_stats"`
+	CareerBadge      string    `gorm:"size:255" json:"career_badge"`
+	CareerTitle      string    `gorm:"size:255" json:"career_title"`
+	CareerDescription string   `gorm:"type:text" json:"career_description"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }

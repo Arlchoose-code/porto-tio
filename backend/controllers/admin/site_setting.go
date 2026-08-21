@@ -63,6 +63,9 @@ func UpdateSiteSetting(c *gin.Context) {
 	setting.HeroCardStatus = req.HeroCardStatus
 	setting.HeroCardSubtitle = req.HeroCardSubtitle
 	setting.HeroStats = req.HeroStats
+	setting.CareerBadge = req.CareerBadge
+	setting.CareerTitle = req.CareerTitle
+	setting.CareerDescription = req.CareerDescription
 
 	config.DB.Save(&setting)
 	services.TriggerRevalidation(config.DB, "site_setting", []string{"/"})

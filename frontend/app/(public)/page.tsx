@@ -81,6 +81,13 @@ export default async function HomePage() {
   const heroCardSubtitle =
     siteInfo?.site_setting?.hero_card_subtitle || "Connecting Strategy, Tech, and Execution.";
 
+  // Dynamic Career section content with fallback
+  const careerBadge = siteInfo?.site_setting?.career_badge || "Career & Leadership";
+  const careerTitle = siteInfo?.site_setting?.career_title || "Proven Track Record in High-Stakes Environments";
+  const careerDescription =
+    siteInfo?.site_setting?.career_description ||
+    "From leading overseas general elections to coordinating bilateral international student assemblies and managing digital development projects, Tio brings structured execution, financial rigor, and empathetic leadership.";
+
   // Dynamic Key Impact Stats with fallback
   let heroStats = [
     {
@@ -347,13 +354,13 @@ export default async function HomePage() {
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider">
               <Briefcase className="h-4 w-4" />
-              <span>Career &amp; Leadership</span>
+              <span>{careerBadge}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Proven Track Record in High-Stakes Environments
+              {careerTitle}
             </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              From leading overseas general elections to coordinating bilateral international student assemblies and managing digital development projects, Tio brings structured execution, financial rigor, and empathetic leadership.
+            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+              {careerDescription}
             </p>
             <div className="pt-2">
               <Link href="/experiences" prefetch={true}>

@@ -19,4 +19,7 @@ type SiteSettingRequest struct {
 	HeroCardStatus   string `json:"hero_card_status"`
 	HeroCardSubtitle string `json:"hero_card_subtitle"`
 	HeroStats        string `json:"hero_stats"`
+	CareerBadge      string `json:"career_badge"`
+	CareerTitle      string `json:"career_title"`
+	CareerDescription string `json:"career_description"`
 }
