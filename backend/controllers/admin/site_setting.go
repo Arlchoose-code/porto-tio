@@ -58,6 +58,10 @@ func UpdateSiteSetting(c *gin.Context) {
 	setting.HeroBadge = req.HeroBadge
 	setting.HeroTitle = req.HeroTitle
 	setting.HeroDescription = req.HeroDescription
+	setting.HeroImage = req.HeroImage
+	setting.HeroCardTitle = req.HeroCardTitle
+	setting.HeroCardStatus = req.HeroCardStatus
+	setting.HeroCardSubtitle = req.HeroCardSubtitle
 	setting.HeroStats = req.HeroStats
 
 	config.DB.Save(&setting)

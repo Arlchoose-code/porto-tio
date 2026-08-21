@@ -403,6 +403,47 @@ export default function AdminSettingsPage() {
                       This narrative is synchronized and displayed on both the Homepage Hero section and the Site Footer.
                     </p>
                   </div>
+
+                  <div className="space-y-3 pt-2 border-t border-border/40">
+                    <ImageUploadField
+                      label="Hero Portrait Photo (Right Side Hero Card)"
+                      value={site?.hero_image}
+                      onChange={(val) => setSite((prev) => (prev ? { ...prev, hero_image: val.original } : null))}
+                      description="Upload a sharp, professional portrait image for the right side of the homepage hero section (Recommended: 4:5 vertical portrait)."
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-semibold">Hero Card Title</Label>
+                        <Input
+                          value={site?.hero_card_title || ""}
+                          onChange={(e) => setSite((prev) => (prev ? { ...prev, hero_card_title: e.target.value } : null))}
+                          placeholder="e.g. Digital Business &amp; PM"
+                          className="h-9 text-xs"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-semibold">Status Badge Text</Label>
+                        <Input
+                          value={site?.hero_card_status || ""}
+                          onChange={(e) => setSite((prev) => (prev ? { ...prev, hero_card_status: e.target.value } : null))}
+                          placeholder="e.g. Available or Open to Work"
+                          className="h-9 text-xs"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-semibold">Hero Card Subtitle</Label>
+                        <Input
+                          value={site?.hero_card_subtitle || ""}
+                          onChange={(e) => setSite((prev) => (prev ? { ...prev, hero_card_subtitle: e.target.value } : null))}
+                          placeholder="e.g. Connecting Strategy, Tech, and Execution."
+                          className="h-9 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Impact Metric Cards */}

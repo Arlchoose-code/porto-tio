@@ -22,6 +22,10 @@ export interface SiteSetting {
   hero_badge?: string;
   hero_title?: string;
   hero_description?: string;
+  hero_image?: string;
+  hero_card_title?: string;
+  hero_card_status?: string;
+  hero_card_subtitle?: string;
   hero_stats?: string; // JSON string of HeroStatItem[]
 }
 

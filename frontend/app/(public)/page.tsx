@@ -72,6 +72,14 @@ export default async function HomePage() {
     siteInfo?.site_setting?.bio_short ||
     siteInfo?.site_setting?.description ||
     "Finance Management graduate from Institut Bisnis Nusantara and Information Systems awardee at University of Belgrade. Combining financial acumen, technical execution, and global leadership.";
+  const heroImage =
+    siteInfo?.site_setting?.hero_image ||
+    siteInfo?.site_setting?.logo ||
+    "/media/projects/avala_orig.webp";
+  const heroCardTitle = siteInfo?.site_setting?.hero_card_title || "Digital Business & PM";
+  const heroCardStatus = siteInfo?.site_setting?.hero_card_status || "Available";
+  const heroCardSubtitle =
+    siteInfo?.site_setting?.hero_card_subtitle || "Connecting Strategy, Tech, and Execution.";
 
   // Dynamic Key Impact Stats with fallback
   let heroStats = [
@@ -148,53 +156,93 @@ export default async function HomePage() {
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-2xl -z-10 pointer-events-none" />
 
         <div className="container mx-auto max-w-6xl px-4 sm:px-6">
-          <MotionDiv delay={0} className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold backdrop-blur-md shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 animate-spin text-primary" style={{ animationDuration: "6s" }} />
-              <span>{heroBadge}</span>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Headline, Bio & CTAs */}
+            <MotionDiv delay={0} className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold backdrop-blur-md shadow-sm">
+                <Sparkles className="h-3.5 w-3.5 animate-spin text-primary" style={{ animationDuration: "6s" }} />
+                <span>{heroBadge}</span>
+              </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
-              {heroTitle.includes("Business, Technology") ? (
-                <>
-                  Connecting{" "}
-                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Business, Technology,
-                  </span>{" "}
-                  Data, and People.
-                </>
-              ) : (
-                heroTitle
-              )}
-            </h1>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+                {heroTitle.includes("Business, Technology") ? (
+                  <>
+                    Connecting{" "}
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      Business, Technology,
+                    </span>{" "}
+                    Data, and People.
+                  </>
+                ) : (
+                  heroTitle
+                )}
+              </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-normal whitespace-pre-line">
-              {heroDescription}
-            </p>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-normal whitespace-pre-line">
+                {heroDescription}
+              </p>
 
-            {/* Quick CTA Actions */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Link href="/projects" prefetch={true}>
-                <Button size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white gap-2 font-medium">
-                  <span>Explore Projects</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+              {/* Quick CTA Actions */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link href="/projects" prefetch={true}>
+                  <Button size="lg" className="rounded-full shadow-lg hover:shadow-primary/25 transition-all bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white gap-2 font-medium">
+                    <span>Explore Projects</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
 
-              <Link href="/about" prefetch={true}>
-                <Button size="lg" variant="outline" className="rounded-full gap-2 border-border/80 hover:bg-accent/80 transition-all">
-                  <span>Read Full Bio</span>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </Link>
+                <Link href="/about" prefetch={true}>
+                  <Button size="lg" variant="outline" className="rounded-full gap-2 border-border/80 hover:bg-accent/80 transition-all">
+                    <span>Read Full Bio</span>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </Link>
 
-              <Link href={`mailto:${contactEmail}`}>
-                <Button size="lg" variant="ghost" className="rounded-full text-muted-foreground hover:text-foreground">
-                  Get in Touch
-                </Button>
-              </Link>
-            </div>
-          </MotionDiv>
+                <Link href={`mailto:${contactEmail}`}>
+                  <Button size="lg" variant="ghost" className="rounded-full text-muted-foreground hover:text-foreground">
+                    Get in Touch
+                  </Button>
+                </Link>
+              </div>
+            </MotionDiv>
+
+            {/* Right Column: Premium Portrait Photo Card */}
+            <MotionDiv delay={1} className="lg:col-span-5 relative flex justify-center lg:justify-end">
+              <div className="w-full max-w-sm sm:max-w-md rounded-3xl border border-border/70 bg-card/60 backdrop-blur-xl p-3 sm:p-4 shadow-2xl relative overflow-hidden group hover:border-primary/50 transition-all">
+                {/* Decorative Header Bar */}
+                <div className="flex items-center justify-between px-2 pb-2.5 border-b border-border/40 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[11px] font-semibold text-foreground">Sulistio Murti Mulyono</span>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase text-muted-foreground/80 tracking-wider">Profile</span>
+                </div>
+
+                {/* Main Portrait Image */}
+                <div className="relative mt-3 rounded-2xl overflow-hidden aspect-[4/5] bg-muted/40 border border-border/40">
+                  <img
+                    src={heroImage}
+                    alt="Sulistio Murti Mulyono"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/15 to-transparent" />
+
+                  {/* Floating Status Banner */}
+                  <div className="absolute bottom-3 left-3 right-3 p-3 rounded-xl border border-border/60 bg-background/85 backdrop-blur-md shadow-lg space-y-0.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-foreground">{heroCardTitle}</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        {heroCardStatus}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground line-clamp-1">
+                      {heroCardSubtitle}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </MotionDiv>
+          </div>
 
           {/* Key Impact Stats Counter Banner */}
           <MotionDiv delay={2} className={`mt-16 grid grid-cols-2 md:grid-cols-${Math.min(heroStats.length, 4)} gap-4 sm:gap-6 p-6 sm:p-8 rounded-3xl border border-border/60 bg-card/60 backdrop-blur-xl shadow-lg hover:border-primary/40 transition-colors`}>
