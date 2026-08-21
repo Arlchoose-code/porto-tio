@@ -315,13 +315,13 @@ export default function AdminSettingsPage() {
         <Tabs defaultValue="hero" className="space-y-6">
           <div className="w-full overflow-x-auto pb-1.5 scrollbar-none touch-pan-x">
             <TabsList className="inline-flex w-max min-w-full bg-card/80 border border-border/50 p-1 rounded-2xl shadow-xs">
-              <TabsTrigger value="hero" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0 text-primary font-medium">
+              <TabsTrigger value="hero" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 <span>Hero &amp; Impact Stats</span>
               </TabsTrigger>
               <TabsTrigger value="branding" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
                 <Settings className="h-3.5 w-3.5" />
-                <span>Branding &amp; Assets</span>
+                <span>Branding &amp; Contact</span>
               </TabsTrigger>
               <TabsTrigger value="socials" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
                 <Share2 className="h-3.5 w-3.5" />
@@ -331,7 +331,7 @@ export default function AdminSettingsPage() {
                 <Globe className="h-3.5 w-3.5" />
                 <span>SEO Paths</span>
               </TabsTrigger>
-              <TabsTrigger value="security" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0 text-primary font-semibold">
+              <TabsTrigger value="security" className="gap-2 text-xs py-2 px-3.5 whitespace-nowrap shrink-0">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 <span>Account &amp; Security</span>
               </TabsTrigger>
@@ -555,17 +555,6 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setSite((prev) => (prev ? { ...prev, description: e.target.value } : null))}
                     placeholder="Brief description for SEO search engines..."
                     className="h-9 text-xs"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold">Short Bio / Footer Biography</Label>
-                  <Textarea
-                    value={site?.bio_short || ""}
-                    onChange={(e) => setSite((prev) => (prev ? { ...prev, bio_short: e.target.value } : null))}
-                    placeholder="Brief bio narrative displayed in footer..."
-                    rows={2}
-                    className="text-xs"
                   />
                 </div>
 
